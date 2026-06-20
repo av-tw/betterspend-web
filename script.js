@@ -50,10 +50,22 @@
   });
 
   /* ===========================
-     FADE-UP: IntersectionObserver (non-hero elements)
-     Hero elements use CSS animation via keyframes in styles.css
+     FADE-UP ANIMATIONS
+     Hero elements: triggered immediately so the transition-delay
+     CSS variable staggers them on load.
+     All other elements: IntersectionObserver triggers on scroll.
      =========================== */
 
+  // Hero: trigger all at once; CSS transition-delay handles the stagger
+  document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(function () {
+      document.querySelectorAll('.hero .fade-up').forEach(function (el) {
+        el.classList.add('animate-in');
+      });
+    }, 60);
+  });
+
+  // Everything else: reveal on scroll
   var fadeObserver = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       if (entry.isIntersecting) {
