@@ -215,12 +215,26 @@ ul {
 
 /* ===========================
    FADE-UP ANIMATIONS
-   All .fade-up elements start hidden. JS triggers .animate-in:
-   - Hero elements: triggered immediately on DOMContentLoaded
-   - All others: triggered by IntersectionObserver on scroll
-   The CSS transition-delay var(--delay) staggers entries within groups.
+   Two systems, zero JS-timing risk:
+   - Hero: pure CSS @keyframes, plays on page load automatically.
+     Stagger via animation-delay: var(--delay).
+   - Everything else: starts hidden via .fade-up, JS adds .animate-in
+     via IntersectionObserver as elements enter the viewport.
    =========================== */
 
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero elements: CSS keyframes, no JS dependency */
+.hero .fade-up {
+  animation: fadeUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--delay, 0s);
+  transition: none; /* prevent transition from interfering */
+}
+
+/* Non-hero: start hidden, reveal via IntersectionObserver */
 .fade-up {
   opacity: 0;
   transform: translateY(28px);
@@ -233,6 +247,16 @@ ul {
 .fade-up.animate-in {
   opacity: 1;
   transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-up,
+  .hero .fade-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* ===========================
