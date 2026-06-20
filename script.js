@@ -69,7 +69,12 @@
 
   document.querySelectorAll('.fade-up').forEach(function (el) {
     if (!el.closest('.hero')) {
-      fadeObserver.observe(el);
+      // If already scrolled past (browser scroll restoration on soft reload), reveal immediately
+      if (el.getBoundingClientRect().bottom <= 0) {
+        el.classList.add('animate-in');
+      } else {
+        fadeObserver.observe(el);
+      }
     }
   });
 
